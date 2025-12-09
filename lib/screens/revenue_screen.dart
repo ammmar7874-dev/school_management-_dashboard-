@@ -9,52 +9,23 @@ class RevenueScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFAF9F6),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: const Color(0xFF7F56D9),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.school, color: Colors.white, size: 20),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'Adicto School',
-              style: GoogleFonts.outfit(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          const Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                'https://i.pravatar.cc/150?u=a042581f4e29026024d',
-              ),
-            ),
-          ),
-        ],
-      ),
+      // AppBar removed
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Custom Header with Back Button
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.black,
+                    size: 20,
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                ),
                 Text(
                   'Revenue Overview',
                   style: GoogleFonts.outfit(
@@ -63,6 +34,13 @@ class RevenueScreen extends StatelessWidget {
                     color: const Color(0xFF333333),
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Existing Share Button logic or just keep it Simple
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
                 IconButton(
                   icon: const Icon(Icons.share_outlined, color: Colors.grey),
                   onPressed: () {},
