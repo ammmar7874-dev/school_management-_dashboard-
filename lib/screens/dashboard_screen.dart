@@ -11,39 +11,8 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F6), // Off-white background
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFAF9F6),
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF6C63FF), // Purple specific
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.school, color: Colors.white),
-          ),
-        ),
-        title: Text(
-          'Adicto School',
-          style: GoogleFonts.outfit(
-            color: Colors.black87,
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                'https://i.pravatar.cc/150?u=a042581f4e29026024d',
-              ), // Placeholder
-            ),
-          ),
-        ],
-      ),
+      backgroundColor: const Color(0xFFFAF9F6),
+      // AppBar removed
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
