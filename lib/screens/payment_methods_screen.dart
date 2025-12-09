@@ -1,5 +1,4 @@
 import 'package:adicto_school/widgets/common_widgets.dart';
-import 'package:adicto_school/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -17,12 +16,21 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
-      appBar: const CustomAppBar(title: 'Payment Methods'),
+      // AppBar removed
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              'Payment Methods',
+              style: GoogleFonts.outfit(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF333333),
+              ),
+            ),
+            const SizedBox(height: 20),
             Text(
               'Saved Cards',
               style: GoogleFonts.outfit(
@@ -34,7 +42,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             const SizedBox(height: 16),
             _buildPaymentCard(
               index: 0,
-              type: 'Visa', // Placeholder for logo logic
+              type: 'Visa',
               last4: '1234',
               expires: '12/26',
               isDefault: defaultMethodIndex == 0,
@@ -86,7 +94,6 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                       border: Border.all(color: Colors.grey[200]!),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    // Placeholder for actual image assets
                     child: Center(
                       child: Text(
                         type == 'Visa' ? 'VISA' : 'MC',

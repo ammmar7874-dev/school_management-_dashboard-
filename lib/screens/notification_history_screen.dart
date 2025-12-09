@@ -1,5 +1,4 @@
 import 'package:adicto_school/widgets/common_widgets.dart';
-import 'package:adicto_school/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,10 +9,19 @@ class NotificationHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
-      appBar: const CustomAppBar(title: 'Notification History'),
+      // AppBar removed
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          Text(
+            'Notification History',
+            style: GoogleFonts.outfit(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF333333),
+            ),
+          ),
+          const SizedBox(height: 20),
           _buildNotificationItem(
             title: 'Class Rescheduled',
             date: 'June 14, 2025 - 4:30 PM',
