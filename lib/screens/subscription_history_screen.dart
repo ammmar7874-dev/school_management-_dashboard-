@@ -1,7 +1,7 @@
 import 'package:adicto_school/screens/add_subscriber_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'subscriber_detail_screen.dart'; // Will create this next
+import 'subscriber_detail_screen.dart';
 
 class SubscriptionHistoryScreen extends StatefulWidget {
   const SubscriptionHistoryScreen({super.key});
@@ -25,32 +25,38 @@ class _SubscriptionHistoryScreenState extends State<SubscriptionHistoryScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFAF9F6),
-        elevation: 0,
-        title: Text(
-          'Subscription History',
-          style: GoogleFonts.outfit(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
-        ),
-        centerTitle: false, // Left aligned title based on image
-        actions: [
-          const Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                'https://i.pravatar.cc/150?u=a042581f4e29026024d',
-              ),
+      // No AppBar
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddSubscriberScreen(),
+            ),
+          );
+        },
+        backgroundColor: const Color(0xFF0085FF),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Row(
+              children: [
+                Text(
+                  'Subscription History',
+                  style: GoogleFonts.outfit(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF333333),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               color: Colors.grey[300],
@@ -72,33 +78,23 @@ class _SubscriptionHistoryScreenState extends State<SubscriptionHistoryScreen>
               ],
             ),
           ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AddSubscriberScreen(),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildList(status: 'Active'),
+                _buildList(status: 'Expired'),
+                _buildList(status: 'Completed'),
+              ],
             ),
-          );
-        },
-        backgroundColor: const Color(0xFF0085FF),
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildList(status: 'Active'),
-          _buildList(status: 'Expired'),
-          _buildList(status: 'Completed'),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildList({required String status}) {
-    // Mock data based on status
+    // Mock data
     final List<Map<String, dynamic>> users = [
       {
         'name': 'Ayesha Khan',
