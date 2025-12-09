@@ -48,8 +48,6 @@ class _AddClassScreenState extends State<AddClassScreen> {
         ), // Navigate to Classes tab
         (route) => false,
       );
-      // Ideally we would pass an index to MainScreen to open specific tab, but request is "click on save sc"
-      // Assuming user wants to see the list screen. I'll modify MainScreen to accept an initial index later if needed.
     }
   }
 
@@ -57,23 +55,7 @@ class _AddClassScreenState extends State<AddClassScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFAF9F6),
-        title: Text(
-          'Add Class',
-          style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                'https://i.pravatar.cc/150?u=a042581f4e29026024d',
-              ),
-            ),
-          ),
-        ],
-      ),
+      // AppBar removed
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -81,6 +63,27 @@ class _AddClassScreenState extends State<AddClassScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  Text(
+                    'Add Class',
+                    style: GoogleFonts.outfit(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF333333),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
               _buildLabel('Class Name'),
               _buildTextField(_nameController, "e.g Salsa Beginners"),
               const SizedBox(height: 16),
