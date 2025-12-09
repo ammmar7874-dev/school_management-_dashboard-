@@ -1,5 +1,4 @@
 import 'package:adicto_school/data_manager.dart';
-import 'package:adicto_school/screens/add_class_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,141 +7,160 @@ class ClassesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dataManager = DataManager();
+
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFAF9F6),
-        title: Text(
-          'Classes',
-          style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddClassScreen()),
-              );
-            },
-          ),
-          const Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                'https://i.pravatar.cc/150?u=a042581f4e29026024d',
+      // No AppBar
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 80),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: Row(
+                children: [
+                  Text(
+                    'Classes & Schedule',
+                    style: GoogleFonts.outfit(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF333333),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          _buildDateHeader(),
-          _buildDaySelector(),
-          Expanded(
-            child: ValueListenableBuilder<List<ScheduledClass>>(
-              valueListenable: DataManager().classesNotifier,
-              builder: (context, classes, child) {
-                if (classes.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'No classes scheduled.',
-                      style: GoogleFonts.outfit(color: Colors.grey),
-                    ),
-                  );
-                }
+            const SizedBox(height: 16),
+            _buildDateHeader(),
+            const SizedBox(height: 16),
+            _buildDaySelector(),
+            const SizedBox(height: 16),
+            ValueListenableBuilder<List<ScheduledClass>>(
+              valueListenable: dataManager.classesNotifier,
+              builder: (context, classes, _) {
                 return ListView.separated(
-                  padding: const EdgeInsets.all(16),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   itemCount: classes.length,
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 16),
                   itemBuilder: (context, index) {
                     final item = classes[index];
-                    return Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.05),
-                            spreadRadius: 2,
-                            blurRadius: 10,
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.name,
-                            style: GoogleFonts.outfit(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF333333),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          _buildDetailRow(Icons.access_time_filled, item.time),
-                          const SizedBox(height: 10),
-                          _buildDetailRow(
-                            Icons.person,
-                            'Instructor: ${item.instructor}',
-                          ),
-                          const SizedBox(height: 10),
-                          _buildDetailRow(Icons.location_on, item.room),
-                        ],
-                      ),
-                    );
+                    return _buildClassCard(item);
                   },
                 );
               },
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildClassCard(ScheduledClass item) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.05),
+            spreadRadius: 2,
+            blurRadius: 10,
           ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                item.name,
+                style: GoogleFonts.outfit(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF333333),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: item.type == 'Yoga'
+                      ? Colors.purple[50]
+                      : Colors.blue[50],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  item.type,
+                  style: GoogleFonts.outfit(
+                    color: item.type == 'Yoga' ? Colors.purple : Colors.blue,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(child: _buildDetailRow(Icons.access_time, item.time)),
+              Expanded(child: _buildDetailRow(Icons.person, item.instructor)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          _buildDetailRow(Icons.location_on, 'Room 304'),
         ],
       ),
     );
   }
 
+  Widget _buildDetailRow(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 14, color: Colors.grey),
+        const SizedBox(width: 8),
+        Text(text, style: GoogleFonts.outfit(color: Colors.grey, fontSize: 13)),
+      ],
+    );
+  }
+
   Widget _buildDateHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back_ios, size: 16),
-            onPressed: () {},
-          ),
+          const Icon(Icons.arrow_back_ios, size: 16, color: Colors.grey),
           Text(
             'Jan 12 - 17, 2024',
             style: GoogleFonts.outfit(
-              fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFF333333),
+              fontSize: 16,
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.arrow_forward_ios, size: 16),
-            onPressed: () {},
-          ),
+          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
         ],
       ),
     );
   }
 
   Widget _buildDaySelector() {
-    final days = [
-      {'day': 'Mon', 'date': '12'},
-      {'day': 'Tue', 'date': '13'},
-      {'day': 'Wed', 'date': '14'},
-      {'day': 'Thu', 'date': '15'},
-      {'day': 'Fri', 'date': '16'},
-      {'day': 'Sun', 'date': '18'},
-      {'day': 'Sat', 'date': '17'},
-    ];
-
+    final days = ['Sun 11', 'Mon 12', 'Tue 13', 'Wed 14', 'Thu 15', 'Fri 16'];
     return SizedBox(
       height: 70,
       child: ListView.separated(
@@ -151,35 +169,34 @@ class ClassesScreen extends StatelessWidget {
         itemCount: days.length,
         separatorBuilder: (context, index) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
-          final isSelected = days[index]['date'] == '14';
+          final isSelected = index == 3;
           return Container(
-            width: 50,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.transparent,
+              color: isSelected ? const Color(0xFFF3F0FF) : Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
               border: isSelected
-                  ? const Border(
-                      bottom: BorderSide(color: Color(0xFF7F56D9), width: 3),
-                    )
+                  ? Border.all(color: const Color(0xFF7F56D9), width: 1.5)
                   : null,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  days[index]['day']!,
+                  days[index].split(' ')[0],
                   style: GoogleFonts.outfit(
-                    color: isSelected ? const Color(0xFF7F56D9) : Colors.black,
-                    fontWeight: FontWeight.bold,
+                    color: isSelected ? const Color(0xFF7F56D9) : Colors.grey,
+                    fontSize: 12,
                   ),
                 ),
-                const SizedBox(height: 4),
                 Text(
-                  days[index]['date']!,
+                  days[index].split(' ')[1],
                   style: GoogleFonts.outfit(
-                    color: isSelected ? const Color(0xFF7F56D9) : Colors.black,
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                    color: isSelected
+                        ? const Color(0xFF7F56D9)
+                        : const Color(0xFF333333),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
                 ),
               ],
@@ -187,19 +204,6 @@ class ClassesScreen extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-
-  Widget _buildDetailRow(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: Colors.grey[400]),
-        const SizedBox(width: 12),
-        Text(
-          text,
-          style: GoogleFonts.outfit(color: Colors.grey[600], fontSize: 14),
-        ),
-      ],
     );
   }
 }
