@@ -31,9 +31,6 @@ class _AddSubscriptionPlanScreenState extends State<AddSubscriptionPlanScreen> {
 
       DataManager().addPlan(newPlan);
 
-      // Navigate back to the MainScreen (which defaults to index 0, need to swtich to Subscriber tab?)
-      // User request: "after click on save make subscription list screen"
-      // Subscription List is likely the 4th tab (index 3).
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
@@ -48,23 +45,7 @@ class _AddSubscriptionPlanScreenState extends State<AddSubscriptionPlanScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFAF9F6),
-        title: Text(
-          'Add Subscription Plan',
-          style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                'https://i.pravatar.cc/150?u=a042581f4e29026024d',
-              ),
-            ),
-          ),
-        ],
-      ),
+      // AppBar removed
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -72,6 +53,27 @@ class _AddSubscriptionPlanScreenState extends State<AddSubscriptionPlanScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  Text(
+                    'Add Subscription Plan',
+                    style: GoogleFonts.outfit(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF333333),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
               _buildLabel('Plan Name'),
               _buildTextField(_nameController, "e.g 10-Class Pack"),
               const SizedBox(height: 16),
