@@ -18,7 +18,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
   final PageController _pageController = PageController();
   final _formKey = GlobalKey<FormState>();
 
-  List<File> _coverImages = [];
+  List<String> _coverImagePaths = [];
   int _currentImageIndex = 0;
 
   final _posterController = TextEditingController();
@@ -269,6 +269,10 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                             },
                             itemCount: _coverImages.length,
                             itemBuilder: (context, index) {
+                              if (index >= _coverImages.length) {
+                                return const SizedBox.shrink();
+                              }
+                              
                               final imageFile = _coverImages[index];
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -276,36 +280,37 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
-                                  child: FutureBuilder<bool>(
-                                    future: imageFile.exists(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData &&
-                                          snapshot.data == true) {
-                                        return Image.file(
-                                          imageFile,
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                                return Container(
-                                                  color: Colors.grey[300],
-                                                  child: const Center(
-                                                    child: Icon(
-                                                      Icons.broken_image,
-                                                      color: Colors.grey,
-                                                      size: 40,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                        );
-                                      } else {
-                                        return Container(
-                                          color: Colors.grey[300],
-                                          child: const Center(
-                                            child: CircularProgressIndicator(),
+                                  child: Image.file(
+                                    imageFile,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      debugPrint('Image loading error at index $index: $error');
+                                      debugPrint('Image path: ${imageFile.path}');
+                                      return Container(
+                                        color: Colors.grey[300],
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Icons.broken_image,
+                                                color: Colors.grey,
+                                                size: 40,
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                'Failed to load',
+                                                style: GoogleFonts.outfit(
+                                                  color: Colors.grey,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        );
-                                      }
+                                        ),
+                                      );
                                     },
                                   ),
                                 ),
