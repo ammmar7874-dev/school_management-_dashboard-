@@ -218,21 +218,24 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: Column(
         children: [
-          // Screen Title below AppBar
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                _screenTitles[_selectedIndex],
-                style: GoogleFonts.outfit(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF333333),
+          // Screen Title below AppBar (hidden for Classes screen)
+          if (_selectedIndex != 1)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  _screenTitles[_selectedIndex],
+                  style: GoogleFonts.outfit(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF333333),
+                  ),
                 ),
               ),
-            ),
-          ),
+            )
+          else
+            const SizedBox(height: 8),
           // Screen Content
           Expanded(
             child: IndexedStack(index: _selectedIndex, children: _screens),
@@ -254,30 +257,81 @@ class _MainScreenState extends State<MainScreen> {
         items: [
           BottomNavigationBarItem(
             icon: _buildCustomIcon('images/icons/home.png', 0),
-            activeIcon: _buildCustomIcon('images/icons/home.png', 0, isActive: true),
+            activeIcon: _buildCustomIcon(
+              'images/icons/home.png',
+              0,
+              isActive: true,
+            ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: _buildCustomIcon('images/icons/class.png', 1),
-            activeIcon: _buildCustomIcon('images/icons/class.png', 1, isActive: true),
+            activeIcon: _buildCustomIcon(
+              'images/icons/class.png',
+              1,
+              isActive: true,
+            ),
             label: 'Classes',
           ),
           BottomNavigationBarItem(
             icon: _buildCustomIcon('images/icons/plan.png', 2),
-            activeIcon: _buildCustomIcon('images/icons/plan.png', 2, isActive: true),
+            activeIcon: _buildCustomIcon(
+              'images/icons/plan.png',
+              2,
+              isActive: true,
+            ),
             label: 'My Plan',
           ),
           BottomNavigationBarItem(
             icon: _buildCustomIcon('images/icons/subscribe.png', 3),
-            activeIcon: _buildCustomIcon('images/icons/subscribe.png', 3, isActive: true),
+            activeIcon: _buildCustomIcon(
+              'images/icons/subscribe.png',
+              3,
+              isActive: true,
+            ),
             label: 'Subscriber',
           ),
           BottomNavigationBarItem(
             icon: _buildCustomIcon('images/icons/more.png', 4),
-            activeIcon: _buildCustomIcon('images/icons/more.png', 4, isActive: true),
+            activeIcon: _buildCustomIcon(
+              'images/icons/more.png',
+              4,
+              isActive: true,
+            ),
             label: 'More',
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCustomIcon(
+    String assetPath,
+    int index, {
+    bool isActive = false,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      child: Image.asset(
+        assetPath,
+        width: 24,
+        height: 24,
+        color: isActive ? const Color(0xFF0085FF) : Colors.grey,
+        errorBuilder: (context, error, stackTrace) {
+          // Fallback to default icon if image doesn't load
+          final fallbackIcons = [
+            Icons.grid_view,
+            Icons.calendar_today,
+            Icons.format_list_bulleted,
+            Icons.people,
+            Icons.menu,
+          ];
+          return Icon(
+            fallbackIcons[index],
+            color: isActive ? const Color(0xFF0085FF) : Colors.grey,
+            size: 24,
+          );
+        },
       ),
     );
   }

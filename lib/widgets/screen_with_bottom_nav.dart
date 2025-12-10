@@ -69,12 +69,13 @@ class ScreenWithBottomNav extends StatelessWidget {
                 ],
               ),
         actions: [
-          const Padding(
-            padding: EdgeInsets.only(right: 16.0),
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
             child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                'https://i.pravatar.cc/150?u=a042581f4e29026024d',
-              ),
+              backgroundImage: const AssetImage('images/icons/profile.jpg'),
+              onBackgroundImageError: (exception, stackTrace) {
+                // Fallback if image doesn't load
+              },
             ),
           ),
         ],
@@ -106,19 +107,84 @@ class ScreenWithBottomNav extends StatelessWidget {
         fontSize: 12,
       ),
       unselectedLabelStyle: GoogleFonts.outfit(fontSize: 12),
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.grid_view), label: 'Home'),
+      items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.calendar_today),
+          icon: _buildCustomIcon('images/icons/home.png', 0),
+          activeIcon: _buildCustomIcon(
+            'images/icons/home.png',
+            0,
+            isActive: true,
+          ),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: _buildCustomIcon('images/icons/class.png', 1),
+          activeIcon: _buildCustomIcon(
+            'images/icons/class.png',
+            1,
+            isActive: true,
+          ),
           label: 'Classes',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.format_list_bulleted),
+          icon: _buildCustomIcon('images/icons/plan.png', 2),
+          activeIcon: _buildCustomIcon(
+            'images/icons/plan.png',
+            2,
+            isActive: true,
+          ),
           label: 'My Plan',
         ),
-        BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Subscriber'),
-        BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'More'),
+        BottomNavigationBarItem(
+          icon: _buildCustomIcon('images/icons/subscribe.png', 3),
+          activeIcon: _buildCustomIcon(
+            'images/icons/subscribe.png',
+            3,
+            isActive: true,
+          ),
+          label: 'Subscriber',
+        ),
+        BottomNavigationBarItem(
+          icon: _buildCustomIcon('images/icons/more.png', 4),
+          activeIcon: _buildCustomIcon(
+            'images/icons/more.png',
+            4,
+            isActive: true,
+          ),
+          label: 'More',
+        ),
       ],
+    );
+  }
+
+  Widget _buildCustomIcon(
+    String assetPath,
+    int index, {
+    bool isActive = false,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      child: Image.asset(
+        assetPath,
+        width: 24,
+        height: 24,
+        color: isActive ? const Color(0xFF0085FF) : Colors.grey,
+        errorBuilder: (context, error, stackTrace) {
+          // Fallback to default icon if image doesn't load
+          final fallbackIcons = [
+            Icons.grid_view,
+            Icons.calendar_today,
+            Icons.format_list_bulleted,
+            Icons.people,
+            Icons.menu,
+          ];
+          return Icon(
+            fallbackIcons[index],
+            color: isActive ? const Color(0xFF0085FF) : Colors.grey,
+            size: 24,
+          );
+        },
+      ),
     );
   }
 }

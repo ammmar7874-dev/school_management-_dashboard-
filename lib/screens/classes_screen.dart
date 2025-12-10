@@ -13,8 +13,26 @@ class ClassesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
       // No AppBar
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddClassScreen()),
+          );
+        },
+        backgroundColor: const Color(0xFF0085FF),
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: Text(
+          'Add Classes',
+          style: GoogleFonts.outfit(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 80),
+        padding: const EdgeInsets.only(bottom: 100),
         child: Column(
           children: [
             const SizedBox(height: 8),
