@@ -30,9 +30,128 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 4) {
+      // More tab - show popup menu
+      _showMoreMenu(context);
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
+  void _showMoreMenu(BuildContext context) {
+    final RenderBox? button = context.findRenderObject() as RenderBox?;
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect.fromRect(
+      Rect.fromPoints(
+        button!.localToGlobal(Offset.zero, ancestor: overlay),
+        button.localToGlobal(button.size.bottomRight(Offset.zero),
+            ancestor: overlay),
+      ),
+      Offset.zero & overlay.size,
+    );
+
+    showMenu(
+      context: context,
+      position: position,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      items: [
+        PopupMenuItem(
+          child: _buildMenuOption(
+            icon: Icons.receipt_long,
+            title: 'Billing',
+            hasBadge: true,
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AppTierScreen(),
+                ),
+              );
+            },
+          ),
+        ),
+        PopupMenuItem(
+          child: _buildMenuOption(
+            icon: Icons.account_wallet,
+            title: 'Payment Method',
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PaymentMethodsScreen(),
+                ),
+              );
+            },
+          ),
+        ),
+        PopupMenuItem(
+          child: _buildMenuOption(
+            icon: Icons.settings,
+            title: 'Setting',
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfileSettingScreen(),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMenuOption({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    bool hasBadge = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        child: Row(
+          children: [
+            Stack(
+              children: [
+                Icon(icon, color: const Color(0xFF333333), size: 24),
+                if (hasBadge)
+                  Positioned(
+                    right: -2,
+                    top: -2,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(width: 16),
+            Text(
+              title,
+              style: GoogleFonts.outfit(
+                color: const Color(0xFF333333),
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   // Screen titles
@@ -50,69 +169,12 @@ class _MainScreenState extends State<MainScreen> {
     const ClassesScreen(),
     const SubscriptionScreen(), // My Plan points to Subscription List
     const SubscriptionHistoryScreen(),
-    // More Menu
-    Builder(
-      builder: (context) {
-        return Scaffold(
-          backgroundColor: const Color(0xFFFAF9F6),
-          body: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              _buildMenuItem(
-                context,
-                'Revenue Overview',
-                Icons.bar_chart,
-                const RevenueScreen(),
-              ),
-              _buildMenuItem(
-                context,
-                'Manage Subscription Plans',
-                Icons.edit_note,
-                const SubscriptionScreen(),
-              ),
-              const Divider(),
-              _buildMenuItem(
-                context,
-                'Choose Plan (SaaS Tier)',
-                Icons.workspace_premium,
-                const ChoosePlanScreen(),
-              ),
-              _buildMenuItem(
-                context,
-                'Payment Methods',
-                Icons.payment,
-                const PaymentMethodsScreen(),
-              ),
-              const Divider(),
-              _buildMenuItem(
-                context,
-                'Send Notification',
-                Icons.send,
-                const SendNotificationScreen(),
-              ),
-              _buildMenuItem(
-                context,
-                'Notification History',
-                Icons.history,
-                const NotificationHistoryScreen(),
-              ),
-              const Divider(),
-              _buildMenuItem(
-                context,
-                'App Tier & Billing',
-                Icons.star,
-                const AppTierScreen(),
-              ),
-              _buildMenuItem(
-                context,
-                'Profile Settings',
-                Icons.person,
-                const ProfileSettingScreen(),
-              ),
-            ],
-          ),
-        );
-      },
+    // More Menu - Empty screen since we show popup menu
+    const Scaffold(
+      backgroundColor: Color(0xFFFAF9F6),
+      body: Center(
+        child: Text('Tap More to see options'),
+      ),
     ),
   ];
 

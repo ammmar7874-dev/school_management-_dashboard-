@@ -1,6 +1,7 @@
 import 'package:adicto_school/screens/add_class_screen.dart';
 import 'package:adicto_school/screens/add_subscription_plan_screen.dart';
 import 'package:adicto_school/screens/revenue_screen.dart';
+import 'package:adicto_school/screens/send_notification_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -118,7 +119,14 @@ class DashboardScreen extends StatelessWidget {
                   child: SizedBox(
                     height: 50,
                     child: OutlinedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SendNotificationScreen(),
+                          ),
+                        );
+                      },
                       icon: const Icon(
                         Icons.notifications_none,
                         color: Colors.black87,
