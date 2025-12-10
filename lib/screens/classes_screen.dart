@@ -16,22 +16,7 @@ class ClassesScreen extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 80),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: Row(
-                children: [
-                  Text(
-                    'Classes & Schedule',
-                    style: GoogleFonts.outfit(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF333333),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
             _buildDateHeader(),
             const SizedBox(height: 16),
             _buildDaySelector(),
@@ -166,12 +151,14 @@ class ClassesScreen extends StatelessWidget {
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
         itemCount: days.length,
         separatorBuilder: (context, index) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final isSelected = index == 3;
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            constraints: const BoxConstraints(minWidth: 60),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
               color: isSelected ? const Color(0xFFF3F0FF) : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
@@ -181,6 +168,7 @@ class ClassesScreen extends StatelessWidget {
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   days[index].split(' ')[0],

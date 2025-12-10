@@ -40,21 +40,7 @@ class _SubscriptionHistoryScreenState extends State<SubscriptionHistoryScreen>
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Row(
-              children: [
-                Text(
-                  'Subscription History',
-                  style: GoogleFonts.outfit(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF333333),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const SizedBox(height: 8),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             padding: const EdgeInsets.all(4),

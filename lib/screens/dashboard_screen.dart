@@ -18,15 +18,6 @@ class DashboardScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Dashboard',
-              style: GoogleFonts.outfit(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF333333),
-              ),
-            ),
-            const SizedBox(height: 20),
             // Statistics Cards
             _buildStatCard(
               title: '128',
@@ -36,12 +27,22 @@ class DashboardScreen extends StatelessWidget {
               iconBgColor: Colors.blue[100]!,
             ),
             const SizedBox(height: 16),
-            _buildStatCard(
-              title: '\$4.560.00',
-              subtitle: 'Total Revenue',
-              icon: Icons.sync,
-              iconColor: Colors.green,
-              iconBgColor: Colors.green[100]!,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RevenueScreen(),
+                  ),
+                );
+              },
+              child: _buildStatCard(
+                title: '\$4.560.00',
+                subtitle: 'Total Revenue',
+                icon: Icons.sync,
+                iconColor: Colors.green,
+                iconBgColor: Colors.green[100]!,
+              ),
             ),
             const SizedBox(height: 16),
             _buildStatCard(

@@ -35,6 +35,15 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  // Screen titles
+  final List<String> _screenTitles = [
+    'Dashboard',
+    'Classes & Schedule',
+    'Subscription Plans',
+    'Subscription History',
+    'More',
+  ];
+
   // Screens list
   final List<Widget> _screens = [
     const DashboardScreen(),
@@ -162,7 +171,29 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
-      body: IndexedStack(index: _selectedIndex, children: _screens),
+      body: Column(
+        children: [
+          // Screen Title below AppBar
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                _screenTitles[_selectedIndex],
+                style: GoogleFonts.outfit(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF333333),
+                ),
+              ),
+            ),
+          ),
+          // Screen Content
+          Expanded(
+            child: IndexedStack(index: _selectedIndex, children: _screens),
+          ),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

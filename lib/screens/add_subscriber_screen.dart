@@ -1,3 +1,4 @@
+import 'package:adicto_school/widgets/screen_with_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,35 +15,15 @@ class _AddSubscriberScreenState extends State<AddSubscriberScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F6),
-      // AppBar removed
-      body: SingleChildScrollView(
+    return ScreenWithBottomNav(
+      title: 'Add New Subscriber',
+      currentIndex: 3, // Subscriber index
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                Text(
-                  'Add New Subscriber',
-                  style: GoogleFonts.outfit(
-                    color: const Color(0xFF333333),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 8),
             _buildLabel('Name'),
             _buildTextField('e.g Ayesha Khan'),
             const SizedBox(height: 20),

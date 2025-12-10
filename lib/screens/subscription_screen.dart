@@ -1,4 +1,5 @@
 import 'package:adicto_school/data_manager.dart';
+import 'package:adicto_school/screens/add_subscription_plan_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,22 +13,27 @@ class SubscriptionScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFAF9F6),
       // No AppBar, handled by MainScreen
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddSubscriptionPlanScreen(),
+            ),
+          );
+        },
+        backgroundColor: const Color(0xFF0085FF),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       body: ValueListenableBuilder<List<SubscriptionPlan>>(
         valueListenable: dataManager.plansNotifier,
         builder: (context, plans, _) {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              Text(
-                'Subscription Plans',
-                style: GoogleFonts.outfit(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF333333),
-                ),
-              ),
-              const SizedBox(height: 20),
-              ...plans.map((plan) {
+              ...plans.asMap().entries.map((entry) {
+                final index = entry.key;
+                final plan = entry.value;
                 return Container(
                   margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(16),
@@ -66,7 +72,7 @@ class SubscriptionScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '\$${plan.price.toStringAsFixed(0)}',
+                                  plan.price,
                                   style: GoogleFonts.outfit(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -115,7 +121,16 @@ class SubscriptionScreen extends StatelessWidget {
                                 size: 20,
                               ),
                               onPressed: () {
-                                // Edit Logic
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddSubscriptionPlanScreen(
+                                          planToEdit: plan,
+                                          planIndex: index,
+                                        ),
+                                  ),
+                                );
                               },
                             ),
                           ),
@@ -132,7 +147,43 @@ class SubscriptionScreen extends StatelessWidget {
                                 size: 20,
                               ),
                               onPressed: () {
-                                // Delete Logic
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                        'Delete Plan',
+                                        style: GoogleFonts.outfit(),
+                                      ),
+                                      content: Text(
+                                        'Are you sure you want to delete "${plan.name}"?',
+                                        style: GoogleFonts.outfit(),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          child: Text(
+                                            'Cancel',
+                                            style: GoogleFonts.outfit(),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            dataManager.deletePlan(index);
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text(
+                                            'Delete',
+                                            style: GoogleFonts.outfit(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                               },
                             ),
                           ),

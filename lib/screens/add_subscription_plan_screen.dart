@@ -1,10 +1,13 @@
 import 'package:adicto_school/data_manager.dart';
 import 'package:adicto_school/screens/main_screen.dart';
+import 'package:adicto_school/widgets/screen_with_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AddSubscriptionPlanScreen extends StatefulWidget {
-  const AddSubscriptionPlanScreen({super.key});
+  final SubscriptionPlan? planToEdit;
+  final int? planIndex;
+  const AddSubscriptionPlanScreen({super.key, this.planToEdit, this.planIndex});
 
   @override
   State<AddSubscriptionPlanScreen> createState() =>
@@ -13,15 +16,45 @@ class AddSubscriptionPlanScreen extends StatefulWidget {
 
 class _AddSubscriptionPlanScreenState extends State<AddSubscriptionPlanScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _priceController = TextEditingController();
-  final _durationController = TextEditingController();
-  final _entriesController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  late final TextEditingController _nameController;
+  late final TextEditingController _priceController;
+  late final TextEditingController _durationController;
+  late final TextEditingController _entriesController;
+  late final TextEditingController _descriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(
+      text: widget.planToEdit?.name ?? '',
+    );
+    _priceController = TextEditingController(
+      text: widget.planToEdit?.price ?? '',
+    );
+    _durationController = TextEditingController(
+      text: widget.planToEdit?.duration ?? '',
+    );
+    _entriesController = TextEditingController(
+      text: widget.planToEdit?.entries ?? '',
+    );
+    _descriptionController = TextEditingController(
+      text: widget.planToEdit?.description ?? '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _priceController.dispose();
+    _durationController.dispose();
+    _entriesController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   void _savePlan() {
     if (_formKey.currentState!.validate()) {
-      final newPlan = SubscriptionPlan(
+      final plan = SubscriptionPlan(
         name: _nameController.text,
         price: _priceController.text,
         duration: _durationController.text,
@@ -29,12 +62,16 @@ class _AddSubscriptionPlanScreenState extends State<AddSubscriptionPlanScreen> {
         description: _descriptionController.text,
       );
 
-      DataManager().addPlan(newPlan);
+      if (widget.planToEdit != null && widget.planIndex != null) {
+        DataManager().updatePlan(widget.planIndex!, plan);
+      } else {
+        DataManager().addPlan(plan);
+      }
 
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => const MainScreen(initialIndex: 3),
+          builder: (context) => const MainScreen(initialIndex: 2),
         ),
         (route) => false,
       );
@@ -43,37 +80,19 @@ class _AddSubscriptionPlanScreenState extends State<AddSubscriptionPlanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F6),
-      // AppBar removed
-      body: SingleChildScrollView(
+    return ScreenWithBottomNav(
+      title: widget.planToEdit != null
+          ? 'Edit Subscription Plan'
+          : 'Add Subscription Plan',
+      currentIndex: 2, // My Plan index
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Text(
-                    'Add Subscription Plan',
-                    style: GoogleFonts.outfit(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF333333),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 8),
               _buildLabel('Plan Name'),
               _buildTextField(_nameController, "e.g 10-Class Pack"),
               const SizedBox(height: 16),
@@ -105,7 +124,7 @@ class _AddSubscriptionPlanScreenState extends State<AddSubscriptionPlanScreen> {
                     ),
                   ),
                   child: Text(
-                    'Save Plan',
+                    widget.planToEdit != null ? 'Update Plan' : 'Save Plan',
                     style: GoogleFonts.outfit(
                       color: Colors.white,
                       fontSize: 16,

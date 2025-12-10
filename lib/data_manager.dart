@@ -129,4 +129,20 @@ class DataManager {
   void addPlan(SubscriptionPlan newPlan) {
     plansNotifier.value = [...plansNotifier.value, newPlan];
   }
+
+  void updatePlan(int index, SubscriptionPlan updatedPlan) {
+    final plans = List<SubscriptionPlan>.from(plansNotifier.value);
+    if (index >= 0 && index < plans.length) {
+      plans[index] = updatedPlan;
+      plansNotifier.value = plans;
+    }
+  }
+
+  void deletePlan(int index) {
+    final plans = List<SubscriptionPlan>.from(plansNotifier.value);
+    if (index >= 0 && index < plans.length) {
+      plans.removeAt(index);
+      plansNotifier.value = plans;
+    }
+  }
 }

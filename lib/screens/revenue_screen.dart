@@ -1,3 +1,4 @@
+import 'package:adicto_school/widgets/screen_with_bottom_nav.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,35 +8,15 @@ class RevenueScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F6),
-      // AppBar removed
-      body: SingleChildScrollView(
+    return ScreenWithBottomNav(
+      title: 'Revenue Overview',
+      currentIndex: 0, // Home index
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Custom Header with Back Button
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                Text(
-                  'Revenue Overview',
-                  style: GoogleFonts.outfit(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF333333),
-                  ),
-                ),
-              ],
-            ),
+            // Title removed - will be shown in main screen app bar if needed
             const SizedBox(height: 16),
             // Existing Share Button logic or just keep it Simple
             Row(

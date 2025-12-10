@@ -1,5 +1,6 @@
 import 'package:adicto_school/data_manager.dart';
 import 'package:adicto_school/screens/main_screen.dart';
+import 'package:adicto_school/widgets/screen_with_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -53,37 +54,17 @@ class _AddClassScreenState extends State<AddClassScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F6),
-      // AppBar removed
-      body: SingleChildScrollView(
+    return ScreenWithBottomNav(
+      title: 'Add Class',
+      currentIndex: 1, // Classes index
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.black,
-                      size: 20,
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Text(
-                    'Add Class',
-                    style: GoogleFonts.outfit(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF333333),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 8),
               _buildLabel('Class Name'),
               _buildTextField(_nameController, "e.g Salsa Beginners"),
               const SizedBox(height: 16),
