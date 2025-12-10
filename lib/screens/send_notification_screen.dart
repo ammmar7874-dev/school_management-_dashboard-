@@ -1,4 +1,6 @@
+import 'package:adicto_school/screens/notification_history_screen.dart';
 import 'package:adicto_school/widgets/common_widgets.dart';
+import 'package:adicto_school/widgets/screen_with_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,23 +14,15 @@ class SendNotificationScreen extends StatefulWidget {
 class _SendNotificationScreenState extends State<SendNotificationScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F6),
-      // AppBar removed
-      body: SingleChildScrollView(
+    return ScreenWithBottomNav(
+      title: 'Send Notification',
+      currentIndex: 0, // Home index
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Send Notification',
-              style: GoogleFonts.outfit(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF333333),
-              ),
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 8),
             CustomCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,6 +56,32 @@ class _SendNotificationScreenState extends State<SendNotificationScreen> {
             ),
             const SizedBox(height: 32),
             PrimaryButton(text: 'Send Now', onPressed: () {}),
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NotificationHistoryScreen(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.history, color: Color(0xFF0085FF)),
+              label: Text(
+                'History',
+                style: GoogleFonts.outfit(
+                  color: const Color(0xFF0085FF),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                side: const BorderSide(color: Color(0xFF0085FF)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
           ],
         ),
       ),

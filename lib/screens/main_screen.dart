@@ -1,12 +1,8 @@
 import 'package:adicto_school/screens/app_tier_screen.dart';
-import 'package:adicto_school/screens/choose_plan_screen.dart';
 import 'package:adicto_school/screens/classes_screen.dart';
 import 'package:adicto_school/screens/dashboard_screen.dart';
-import 'package:adicto_school/screens/notification_history_screen.dart';
 import 'package:adicto_school/screens/payment_methods_screen.dart';
 import 'package:adicto_school/screens/profile_setting_screen.dart';
-import 'package:adicto_school/screens/revenue_screen.dart';
-import 'package:adicto_school/screens/send_notification_screen.dart';
 import 'package:adicto_school/screens/subscription_history_screen.dart';
 import 'package:adicto_school/screens/subscription_screen.dart';
 import 'package:flutter/material.dart';
@@ -41,72 +37,75 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _showMoreMenu(BuildContext context) {
-    final RenderBox? button = context.findRenderObject() as RenderBox?;
-    final RenderBox overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
-    final RelativeRect position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        button!.localToGlobal(Offset.zero, ancestor: overlay),
-        button.localToGlobal(button.size.bottomRight(Offset.zero),
-            ancestor: overlay),
-      ),
-      Offset.zero & overlay.size,
-    );
-
-    showMenu(
+    showModalBottomSheet(
       context: context,
-      position: position,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      items: [
-        PopupMenuItem(
-          child: _buildMenuOption(
-            icon: Icons.receipt_long,
-            title: 'Billing',
-            hasBadge: true,
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AppTierScreen(),
-                ),
-              );
-            },
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
-        ),
-        PopupMenuItem(
-          child: _buildMenuOption(
-            icon: Icons.account_wallet,
-            title: 'Payment Method',
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PaymentMethodsScreen(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
                 ),
-              );
-            },
+              ),
+              const SizedBox(height: 20),
+              _buildMenuOption(
+                icon: Icons.receipt_long,
+                title: 'Billing',
+                hasBadge: true,
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AppTierScreen(),
+                    ),
+                  );
+                },
+              ),
+              const Divider(height: 1),
+              _buildMenuOption(
+                icon: Icons.wallet,
+                title: 'Payment Method',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PaymentMethodsScreen(),
+                    ),
+                  );
+                },
+              ),
+              const Divider(height: 1),
+              _buildMenuOption(
+                icon: Icons.settings,
+                title: 'Setting',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfileSettingScreen(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+            ],
           ),
-        ),
-        PopupMenuItem(
-          child: _buildMenuOption(
-            icon: Icons.settings,
-            title: 'Setting',
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ProfileSettingScreen(),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -172,26 +171,9 @@ class _MainScreenState extends State<MainScreen> {
     // More Menu - Empty screen since we show popup menu
     const Scaffold(
       backgroundColor: Color(0xFFFAF9F6),
-      body: Center(
-        child: Text('Tap More to see options'),
-      ),
+      body: Center(child: Text('Tap More to see options')),
     ),
   ];
-
-  static Widget _buildMenuItem(
-    BuildContext context,
-    String title,
-    IconData icon,
-    Widget screen,
-  ) {
-    return ListTile(
-      title: Text(title, style: GoogleFonts.outfit()),
-      leading: Icon(icon, color: const Color(0xFF0085FF)),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-      onTap: () =>
-          Navigator.push(context, MaterialPageRoute(builder: (_) => screen)),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

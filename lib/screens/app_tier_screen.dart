@@ -1,3 +1,5 @@
+import 'package:adicto_school/screens/choose_plan_screen.dart';
+import 'package:adicto_school/widgets/screen_with_bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -6,23 +8,15 @@ class AppTierScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F6),
-      // No AppBar
-      body: SingleChildScrollView(
+    return ScreenWithBottomNav(
+      title: 'App Tier & Billing',
+      currentIndex: 4, // More index
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'App Tier & Billing',
-              style: GoogleFonts.outfit(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF333333),
-              ),
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -94,7 +88,14 @@ class AppTierScreen extends StatelessWidget {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ChoosePlanScreen(),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF913BDB),
                         shape: RoundedRectangleBorder(
