@@ -1,4 +1,5 @@
 import 'package:adicto_school/data_manager.dart';
+import 'package:adicto_school/screens/add_class_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
