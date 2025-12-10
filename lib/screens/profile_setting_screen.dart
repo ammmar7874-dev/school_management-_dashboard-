@@ -269,15 +269,42 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                             },
                             itemCount: _coverImages.length,
                             itemBuilder: (context, index) {
+                              final imageFile = _coverImages[index];
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 4,
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
-                                  child: Image.file(
-                                    _coverImages[index],
-                                    fit: BoxFit.cover,
+                                  child: FutureBuilder<bool>(
+                                    future: imageFile.exists(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData && snapshot.data == true) {
+                                        return Image.file(
+                                          imageFile,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Container(
+                                              color: Colors.grey[300],
+                                              child: const Center(
+                                                child: Icon(
+                                                  Icons.broken_image,
+                                                  color: Colors.grey,
+                                                  size: 40,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        return Container(
+                                          color: Colors.grey[300],
+                                          child: const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        );
+                                      }
+                                    },
                                   ),
                                 ),
                               );
