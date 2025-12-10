@@ -60,27 +60,47 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       );
 
       if (image != null) {
-        final file = File(image.path);
+        final filePath = image.path;
+        final file = File(filePath);
+        
+        // Verify file exists and is readable
         if (await file.exists()) {
-          setState(() {
-            _coverImages.add(file);
-            _currentImageIndex = _coverImages.length - 1;
-          });
+          try {
+            // Try to read the file to ensure it's accessible
+            await file.readAsBytes();
+            
+            setState(() {
+              _coverImagePaths.add(filePath);
+              _currentImageIndex = _coverImagePaths.length - 1;
+            });
 
-          // Wait a bit for the widget to rebuild, then animate
-          await Future.delayed(const Duration(milliseconds: 100));
+            // Wait a bit for the widget to rebuild, then animate
+            await Future.delayed(const Duration(milliseconds: 100));
 
-          // Only animate if page controller is attached
-          if (mounted && _pageController.hasClients) {
-            try {
-              _pageController.animateToPage(
-                _currentImageIndex,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
+            // Only animate if page controller is attached
+            if (mounted && _pageController.hasClients) {
+              try {
+                _pageController.animateToPage(
+                  _currentImageIndex,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              } catch (e) {
+                // Page controller might not be ready yet, that's okay
+                debugPrint('Page controller animation error: $e');
+              }
+            }
+          } catch (e) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Error reading image file: ${e.toString()}',
+                    style: GoogleFonts.outfit(),
+                  ),
+                  backgroundColor: Colors.red,
+                ),
               );
-            } catch (e) {
-              // Page controller might not be ready yet, that's okay
-              debugPrint('Page controller animation error: $e');
             }
           }
         } else {
@@ -168,12 +188,12 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
   }
 
   void _navigateImage(int direction) {
-    if (_coverImages.isEmpty) return;
+    if (_coverImagePaths.isEmpty) return;
 
     int newIndex = _currentImageIndex + direction;
     if (newIndex < 0) {
-      newIndex = _coverImages.length - 1;
-    } else if (newIndex >= _coverImages.length) {
+      newIndex = _coverImagePaths.length - 1;
+    } else if (newIndex >= _coverImagePaths.length) {
       newIndex = 0;
     }
 
@@ -230,7 +250,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   IconButton(
-                    onPressed: _coverImages.isEmpty
+                    onPressed: _coverImagePaths.isEmpty
                         ? null
                         : () => _navigateImage(-1),
                     icon: const Icon(
@@ -242,7 +262,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                   SizedBox(
                     width: 240,
                     height: 80,
-                    child: _coverImages.isEmpty
+                    child: _coverImagePaths.isEmpty
                         ? GestureDetector(
                             onTap: _showImageSourceDialog,
                             child: Container(
@@ -267,13 +287,14 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                                 _currentImageIndex = index;
                               });
                             },
-                            itemCount: _coverImages.length,
+                            itemCount: _coverImagePaths.length,
                             itemBuilder: (context, index) {
-                              if (index >= _coverImages.length) {
+                              if (index >= _coverImagePaths.length) {
                                 return const SizedBox.shrink();
                               }
                               
-                              final imageFile = _coverImages[index];
+                              final imagePath = _coverImagePaths[index];
+                              final imageFile = File(imagePath);
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 4,
@@ -286,13 +307,18 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                                     width: double.infinity,
                                     height: double.infinity,
                                     errorBuilder: (context, error, stackTrace) {
-                                      debugPrint('Image loading error at index $index: $error');
-                                      debugPrint('Image path: ${imageFile.path}');
+                                      debugPrint(
+                                        'Image loading error at index $index: $error',
+                                      );
+                                      debugPrint(
+                                        'Image path: ${imageFile.path}',
+                                      );
                                       return Container(
                                         color: Colors.grey[300],
                                         child: Center(
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               const Icon(
                                                 Icons.broken_image,
@@ -319,7 +345,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                           ),
                   ),
                   IconButton(
-                    onPressed: _coverImages.isEmpty
+                    onPressed: _coverImagePaths.isEmpty
                         ? null
                         : () => _navigateImage(1),
                     icon: const Icon(
@@ -330,12 +356,12 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                   ),
                 ],
               ),
-              if (_coverImages.isNotEmpty) ...[
+              if (_coverImagePaths.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
-                    _coverImages.length,
+                    _coverImagePaths.length,
                     (index) => Container(
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       width: 8,
