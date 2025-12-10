@@ -62,13 +62,13 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       if (image != null) {
         final filePath = image.path;
         final file = File(filePath);
-        
+
         // Verify file exists and is readable
         if (await file.exists()) {
           try {
             // Try to read the file to ensure it's accessible
             await file.readAsBytes();
-            
+
             setState(() {
               _coverImagePaths.add(filePath);
               _currentImageIndex = _coverImagePaths.length - 1;
@@ -292,7 +292,7 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
                               if (index >= _coverImagePaths.length) {
                                 return const SizedBox.shrink();
                               }
-                              
+
                               final imagePath = _coverImagePaths[index];
                               final imageFile = File(imagePath);
                               return Padding(
