@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:adicto_school/widgets/common_widgets.dart';
 import 'package:adicto_school/widgets/screen_with_bottom_nav.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -51,23 +52,86 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
 
   Future<void> _pickImage(ImageSource source) async {
     try {
-      final XFile? image = await _picker.pickImage(source: source);
+      final XFile? image = await _picker.pickImage(
+        source: source,
+        imageQuality: 85,
+        maxWidth: 1920,
+        maxHeight: 1080,
+      );
+
       if (image != null) {
-        setState(() {
-          _coverImages.add(File(image.path));
-          _currentImageIndex = _coverImages.length - 1;
-        });
-        _pageController.animateToPage(
-          _currentImageIndex,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
+        final file = File(image.path);
+        if (await file.exists()) {
+          setState(() {
+            _coverImages.add(file);
+            _currentImageIndex = _coverImages.length - 1;
+          });
+
+          // Wait a bit for the widget to rebuild, then animate
+          await Future.delayed(const Duration(milliseconds: 100));
+
+          // Only animate if page controller is attached
+          if (mounted && _pageController.hasClients) {
+            try {
+              _pageController.animateToPage(
+                _currentImageIndex,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            } catch (e) {
+              // Page controller might not be ready yet, that's okay
+              debugPrint('Page controller animation error: $e');
+            }
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Image file not found',
+                  style: GoogleFonts.outfit(),
+                ),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      }
+    } on PlatformException catch (e) {
+      if (mounted) {
+        String errorMessage = 'Error picking image';
+        if (e.code == 'photo_access_denied' ||
+            e.code == 'camera_access_denied') {
+          errorMessage =
+              'Permission denied. Please enable camera/gallery access in settings.';
+        } else if (e.code == 'photo_picker_error') {
+          errorMessage = 'Error accessing photo library';
+        } else if (e.code == 'camera_error') {
+          errorMessage = 'Error accessing camera';
+        } else {
+          errorMessage = 'Error: ${e.message ?? e.code}';
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage, style: GoogleFonts.outfit()),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error picking image: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Unexpected error: ${e.toString()}',
+              style: GoogleFonts.outfit(),
+            ),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
       }
     }
   }
@@ -117,11 +181,17 @@ class _ProfileSettingScreenState extends State<ProfileSettingScreen> {
       _currentImageIndex = newIndex;
     });
 
-    _pageController.animateToPage(
-      newIndex,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
+    if (mounted && _pageController.hasClients) {
+      try {
+        _pageController.animateToPage(
+          newIndex,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      } catch (e) {
+        debugPrint('Page controller navigation error: $e');
+      }
+    }
   }
 
   void _saveChanges() {
