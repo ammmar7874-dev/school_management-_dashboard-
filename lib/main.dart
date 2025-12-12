@@ -1,6 +1,8 @@
-import 'package:adicto_school/screens/main_screen.dart';
+import 'package:adicto_school/src/pages/main/presentation/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+// import 'package:adicto_school/Mobile/screens/dashboard_screen.dart'; // No longer direct import probably
+import 'package:adicto_school/src/pages/home/presentation/home_screen.dart'; // Maybe needed? Usually main imports MainScreen wrapper.
 
 void main() {
   runApp(const MyApp());
